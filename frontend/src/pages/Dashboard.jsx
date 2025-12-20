@@ -93,7 +93,6 @@ export default function Dashboard() {
   const [aiLoading, setAiLoading] = useState(false);
   const [profileData, setProfileData] = useState(null);
 
-
   const todaysInsight = useMemo(
     () => getRandomItem(TODAY_INSIGHTS),
     []
@@ -170,7 +169,13 @@ export default function Dashboard() {
     fetchAIInsight();
   }, [profileData]);
 
-
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center h-[60vh] text-gray-400">
+        Loading dashboard...
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-6 py-10 space-y-14">
