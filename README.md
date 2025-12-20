@@ -18,10 +18,3 @@ MindMeld is a cognitive performance tracking platform that helps users measure, 
 **Frontend:** React, Vite, Tailwind CSS, Recharts
 **Backend:** Node.js, Express, MongoDB
 **Auth:** JWT
-
-## 📂 Project Structure
-MindMeld/
-├── backend/
-├── frontend/
-├── README.md
-└── .gitignore
