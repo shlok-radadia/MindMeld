@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 
 export default function Login() {
+  const navigate = useNavigate();
+
   const { login } = useAuth();
 
   const [email, setEmail] = useState("");
@@ -36,6 +38,7 @@ export default function Login() {
 
       
       login(res.data.token);
+      navigate("/dashboard");
     } catch (err) {
       setError(
         err.response?.data?.message || "Invalid email or password"
@@ -95,7 +98,7 @@ export default function Login() {
         </form>
 
         <p className="text-sm text-gray-400 text-center mt-6">
-          Don’t have an account?{" "}
+          Don't have an account?{" "}
           <Link
             to="/signup"
             className="text-blue-500 hover:underline"

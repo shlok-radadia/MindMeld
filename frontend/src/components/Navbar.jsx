@@ -1,7 +1,8 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function Navbar() {
+  const navigate = useNavigate();
   const { user, logout } = useAuth();
   const location = useLocation();
 
@@ -13,7 +14,7 @@ export default function Navbar() {
       <nav className="mx-auto px-6 py-4 flex items-center justify-between">
     
     
-        <Link to="/dashboard" className="text-xl font-bold tracking-wide">
+        <Link to={user ? "/dashboard" : "/"} className="text-xl font-bold tracking-wide">
           <span className="text-blue-500">Mind</span>Meld
         </Link>
 
@@ -49,7 +50,7 @@ export default function Navbar() {
                 Profile
               </Link>
 
-              <button onClick={logout} className="btn-secondary">
+              <button onClick={() => {logout(); navigate("/");}} className="btn-secondary">
                 Logout
               </button>
             </>

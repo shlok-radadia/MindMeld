@@ -8,8 +8,6 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  
-  
   useEffect(() => {
     const token = localStorage.getItem("token");
 
@@ -33,18 +31,16 @@ export function AuthProvider({ children }) {
   }, []);
 
   
-  
-  const login = (token) => {
+  const login = async (token) => {
     localStorage.setItem("token", token);
-    window.location.href = "/dashboard";
+    const res = await api.get("/api/profiles");
+    setUser(res.data.user);
   };
 
-  
   
   const logout = () => {
     localStorage.removeItem("token");
     setUser(null);
-    window.location.href = "/";
   };
 
   const value = {
@@ -61,7 +57,6 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
-
 
 
 export function useAuth() {

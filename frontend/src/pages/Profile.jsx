@@ -16,13 +16,14 @@ import { getProgress } from "../utils/progress";
 import ProgressBadge from "../components/ProgressBadge";
 import { calculateMindScore, getMindScoreLabel, getMindScoreMeta } from "../utils/mindScore";
 import Heatmap from "../components/Heatmap";
+import { useNavigate } from "react-router-dom";
 
 
 
 function StatGraph({ data, label }) {
   const chartData = [...data].reverse().map((v, i) => ({
     index: `#${i + 1}`,
-    value: v.value, // ✅ FIX
+    value: v.value,
     timestamp: new Date(v.createdAt).toLocaleString("en-IN", {
       day: "numeric",
       month: "short",
@@ -73,6 +74,7 @@ function StatGraph({ data, label }) {
 
 
 export default function Profile() {
+  const navigate = useNavigate();
   const { logout } = useAuth();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -92,8 +94,6 @@ export default function Profile() {
   const [problemHistory, setProblemHistory] = useState([]);
   const [heatmap, setHeatmap] = useState({});
   const [section, setSection] = useState("overview");
-  const [aiInsight, setAiInsight] = useState("");
-  const [aiLoading, setAiLoading] = useState(false);
 
 
 
@@ -155,26 +155,6 @@ export default function Profile() {
   }, []);
 
 
-    useEffect(() => {
-    if (!data) return;
-
-    setAiLoading(true);
-
-    api.post("/api/ai/insight", {
-        memoryAvg: memory.avg,
-        attentionAvg: attention.avg,
-        reactionAvg: reaction.avg,
-        problemAvg: problem.avg,
-        streak: user.streak,
-        trend: "improving"
-    })
-    .then(res => setAiInsight(res.data.insight))
-    .catch(() => setAiInsight(""))
-    .finally(() => setAiLoading(false));
-    }, [data]);
-
-    // console.log(aiInsight)
-
 
   const saveProfile = async () => {
     try {
@@ -208,8 +188,9 @@ export default function Profile() {
         confirmPassword,
       });
 
-      // FORCE LOGOUT
+      
       logout();
+      navigate("/");
 
       setPasswordMsg("Password updated successfully");
 
@@ -217,8 +198,6 @@ export default function Profile() {
       setNewPassword("");
       setConfirmPassword("");
 
-      // Optional: logout user
-      // logout();
 
     } catch (err) {
       setPasswordMsg(
@@ -315,7 +294,7 @@ export default function Profile() {
         {/* LOGOUT */}
         <div className="px-4 py-4 border-t border-gray-800">
             <button
-            onClick={logout}
+            onClick={() => {logout(); navigate("/");}}
             className="w-full text-left px-4 py-2 rounded-lg text-red-400 hover:bg-red-500/10 transition cursor-pointer"
             >
             Logout
@@ -409,28 +388,6 @@ export default function Profile() {
                         {totals.allTests}
                     </span>
                     </p>
-                </div>
-                
-
-                {/* AI Coach Card */}
-                <div className="card">
-                    <h2 className="text-xl font-bold mb-3">🤖 AI Cognitive Coach</h2>
-
-                    {aiLoading && (
-                        <p className="text-gray-400">Analyzing your performance...</p>
-                    )}
-
-                    {!aiLoading && aiInsight && (
-                        <pre className="whitespace-pre-wrap text-gray-300 leading-relaxed">
-                        {aiInsight}
-                        </pre>
-                    )}
-
-                    {!aiLoading && !aiInsight && (
-                        <p className="text-gray-400">
-                        Complete more tests to unlock AI insights.
-                        </p>
-                    )}
                 </div>
               </div>
 

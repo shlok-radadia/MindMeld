@@ -24,6 +24,9 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // console.log("AXIOS 401 FROM:", error.config?.url);
+    // console.log("TOKEN EXISTS:", localStorage.getItem("token"));
+    // return Promise.reject(error);
     const status = error.response?.status;
     const url = error.config?.url;
 

@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import { useAuth } from "../context/AuthContext";
 
 export default function Signup() {
+  const navigate = useNavigate();
   const { login } = useAuth();
 
   const [form, setForm] = useState({
@@ -58,6 +59,7 @@ export default function Signup() {
       });
 
       login(res.data.token);
+      navigate("/dashboard");
     } catch (err) {
       setError(
         err.response?.data?.message || "Signup failed"

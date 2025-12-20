@@ -4,8 +4,10 @@ import api from "../../api/axios";
 
 function generateGrid() {
   const size = 36;
-  const baseChar = Math.random() > 0.5 ? "O" : "0";
-  const oddChar = baseChar === "O" ? "0" : "O";
+  const arr = [["6", "9"], ["O", "Q"], ["O", "0"], ["U", "V"], ["8", "B"], ["1", "I"], ["S", "5"]];
+  const characters = arr[Math.floor(Math.random() * arr.length)];
+  const baseChar = Math.random() > 0.5 ? characters[0] : characters[1];
+  const oddChar = baseChar === characters[0] ? characters[1] : characters[0];
 
   const oddIndex = Math.floor(Math.random() * size);
 
@@ -82,7 +84,7 @@ export default function AttentionTest() {
             <button
               key={idx}
               onClick={() => handleClick(cell)}
-              className="w-12 h-12 text-xl font-bold bg-gray-800 rounded hover:bg-gray-700 transition"
+              className="w-12 h-12 text-xl font-bold bg-gray-800 rounded hover:bg-gray-700 transition cursor-pointer"
             >
               {cell.char}
             </button>
