@@ -120,7 +120,7 @@ export default function Dashboard() {
     //   attentionAvg: attention.avg,
     //   reactionAvg: reaction.avg,
     //   problemAvg: problem.avg,
-    //   streak: user.streak,
+    //   streak: profileData?.user?.streak ?? 0,
     // });
 
 
@@ -130,7 +130,7 @@ export default function Dashboard() {
         attentionAvg: attention.avg,
         reactionAvg: reaction.avg,
         problemAvg: problem.avg,
-        streak: user.streak,
+        streak: profileData?.user?.streak ?? 0,
         trend: "improving",
       })
       .then((res) => {
@@ -149,13 +149,19 @@ export default function Dashboard() {
   };
 
 
-  useEffect(() => {
-    api
-      .get("/api/profiles")
-      .then(res => setProfileData(res.data))
-      .catch(() => setProfileData(null));
-  }, []);
+  const fetchProfile = async () => {
+    try {
+      const res = await api
+        .get("/api/profiles");
+        setProfileData(res.data);
+    } catch {
+      setProfileData(null);
+    }
+  };
 
+  useEffect(() => {
+    fetchProfile();
+  }, []);
 
   useEffect(() => {
     if (!profileData) return;
@@ -225,7 +231,7 @@ export default function Dashboard() {
 
             <div>
               <h3 className="text-4xl font-bold text-orange-400 leading-none">
-                {user.streak}
+                {profileData?.user?.streak ?? 0}
                 <span className="text-base font-medium text-gray-300 ml-1">
                   days
                 </span>
@@ -234,7 +240,7 @@ export default function Dashboard() {
               <p className="text-sm text-gray-400 mt-1">
                 Longest streak:{" "}
                 <span className="text-gray-200 font-medium">
-                  {user.longestStreak} days
+                  {profileData?.user?.longestStreak ?? 0} days
                 </span>
               </p>
             </div>
@@ -242,25 +248,26 @@ export default function Dashboard() {
             <div>
               <div className="flex justify-between text-xs text-gray-400 mb-1">
                 <span>Next milestone</span>
-                <span>{user.streak + 1} days</span>
+                <span>{(profileData?.user?.streak ?? 0) + 1} days</span>
               </div>
 
               <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-gradient-to-r from-orange-400 to-orange-600 transition-all duration-500"
                   style={{
-                    width: `${Math.min((user.streak % 7) * 14, 100)}%`,
+                    width: `${Math.min(((profileData?.user?.streak ?? 0) % 7) * 14, 100)}%`,
                   }}
                 />
               </div>
             </div>
 
             <p className="text-xs text-gray-400">
-              {user.streak >= 7
-                ? "Elite consistency — keep pushing"
-                : user.streak >= 3
-                ? "Momentum building — stay consistent"
-                : "Start strong today"}
+              {(() => {
+                const streak = profileData?.user?.streak ?? 0;
+                if (streak >= 7) return "Elite consistency — keep pushing";
+                if (streak >= 3) return "Momentum building — stay consistent";
+                return "Start strong today";
+              })()}
             </p>
           </div>
         </div>
